@@ -8,24 +8,29 @@ import Model.Option;
 public class Login implements Option{
 
 	@Override
-	public void oper(Employee user, Scanner s, Database database) {
+	public void oper(Employee user, Scanner sc, Database database) {
 		
 		System.out.println("Welcome to SuperMarket Management System");
 		System.out.print("Enter You Email: ");
-		String email = s.next();
+		String email = sc.next();
 		System.out.print("Enter Your Password: ");
-		String password = s.next();
-		Controller.Login login = new Controller.Login(email, password);
+		String password = sc.next();
+		Controller.Login login = new Controller.Login(email, password, database);
 		
 		if (login.isLoggedIn()) {
 			Employee employee = login.getUser();
 			System.out.println("Welcome "+employee.getFirstName());
-			employee.showList();
+			employee.showList(sc, database);
 		}
 		else {
 			System.out.println("Wrong Email and Password");
 			System.out.println("Check your Credentials and TRY AGAIN.");
 		}
+	}
+	
+	@Override
+	public String getOption() {
+		return "Login";
 	}
 	
 }

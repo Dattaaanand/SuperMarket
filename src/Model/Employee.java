@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.Scanner;
+
 public abstract class Employee {
 	
 	protected int ID;
@@ -89,6 +91,6 @@ public abstract class Employee {
 	// 1 = Cashier
 	// 2 = Storekeeper
 	
-	public abstract void showList();
+	public abstract void showList(Scanner sc, Database database);
 	
 }
