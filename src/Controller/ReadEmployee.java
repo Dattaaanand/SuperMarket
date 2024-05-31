@@ -1,4 +1,5 @@
 package Controller;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import Model.Admin;
@@ -6,15 +7,15 @@ import Model.Cashier;
 import Model.Database;
 import Model.Employee;
 import Model.Storekeeper;
+
 public class ReadEmployee {
 	private Employee e;
 	public ReadEmployee(int ID, Database database) {
-		String select = "SELECT * FROM 'employees' WHERE 'ID' = "+ID+" ;";
+		String select = "SELECT * FROM employees WHERE ID = "+ID+" ;";
 		try {
 			ResultSet rs = database.getStatement().executeQuery(select);
 			rs.next();
-			int ID = rs.getInt("ID");
-			String firstName = rs.getString("FirtName");
+			String firstName = rs.getString("FirstName");
 			String lastName = rs.getString("LastName");
 			String phoneNumber = rs.getString("PhoneNumber");
 			String email = rs.getString("Email");
@@ -47,8 +48,8 @@ public class ReadEmployee {
 			e.setSalary(salary);
 			e.setPhoneNumber(phoneNumber);
 			e.setEmail(email);
-			e.setPassword(password);
-		}catch (SQLException exception) {
+		}
+		catch (SQLException exception) {
 			exception.printStackTrace();
 		}
 	}

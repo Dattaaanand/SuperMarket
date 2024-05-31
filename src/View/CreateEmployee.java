@@ -14,6 +14,8 @@ public class CreateEmployee implements Option{
 	@Override
 	public void oper(Employee user, Scanner sc, Database database) {
 		
+		System.out.print("Enter ID: ");
+		int ID = sc.nextInt();
 		System.out.print("Enter First Name: ");
 		String firstName = sc.next();
 		System.out.print("Enter Last Name: ");

@@ -1,22 +1,25 @@
 package Controller;
-import java.sql.ResultSet
+
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import Model.Admin;
 import Model.Cashier;
 import Model.Employee;
 import Model.Storekeeper;
-import Model.database;
+import Model.Database;
+import java.sql.SQLException;
+
 public class ReadAllEmployees {
 	private ArrayList <Employee> employees;
 	public ReadAllEmployees(Database database) {
-		String select = "SELECT * FROM 'employees';";
+		String select = "SELECT * FROM employees;";
 		employees = new ArrayList<>();
 		try {
 		ResultSet rs = database.getStatement().executeQuery(select);
 		while(rs.next()) {
 			int ID = rs.getInt("ID");
-			String firstName = rs.getString("FirtName");
+			String firstName = rs.getString("FirstName");
 			String lastName = rs.getString("LastName");
 			String phoneNumber = rs.getString("PhoneNumber");
 			String email = rs.getString("Email");
@@ -58,7 +61,7 @@ public class ReadAllEmployees {
 	}
 	public void print() {
 		for (Employee e : employees) {
-			System.out.println("----------------------------------------")
+			System.out.println("----------------------------------------");
 			System.out.println("ID:\t \t"+e.getID());
 			System.out.println("First Name: \t"+e.getFirstName());
 			System.out.println("Last Name: \t"+e.getLastName());
@@ -66,14 +69,8 @@ public class ReadAllEmployees {
 			System.out.println("Phone Number: \t"+e.getPhoneNumber());
 			System.out.println("Address: \t"+e.getAddress());
 			System.out.println("Salary: \t"+e.getSalary()+"$");
-			System.out.println("Department: \t"+e.getDepartmentToString());
+			System.out.println("Department: \t"+e.getDepartment());
 			System.out.println("---------------------------------------");
 		}
-		//System.out.println("-------------------------------------");
-		//System.out.println("ID \t Name \t Email \t Phone Num \t Address \t Salary \t Dept");
-		//for (Employee e : employees) {
-			//System.out.println(e.getID()+ "\t" +e.getFirstName()+ " " +e.getLastName()+ "\t" +e.getEmail() + "\t" +e.getPhoneNumber() + "\t" +e.getaddress()+ "\t" + e.getSalary()+"$\t"+ e.getDepartmentToString());			
-		//}
-		//System.out.println("-------------------------------------");
 	}
 }

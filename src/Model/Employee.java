@@ -91,6 +91,43 @@ public abstract class Employee {
 	// 1 = Cashier
 	// 2 = Storekeeper
 	
-	public abstract void showList(Scanner sc, Database database);
-	
+	public String getDepartmentToString() {
+		String dept;
+		switch (getDepartment()) {
+		case 0:
+			dept = "Manager";
+			break;
+		case 1:
+			dept = "Cashier";
+			break;
+		case 2:
+			dept = "Storekeeper";
+			break;
+		default:
+			dept = "Invalid";
+			break;
+		}
+		return dept;
+	}
+	public void showList(Scanner s, Database database) {
+		System.out.println("-------------------------");
+		for (int i=1;i<=options.length;i++) {
+			System.out.println(i+"."+options[i-1].getOption());
+		}
+		System.out.println("-------------------------");
+		int selected = s.nextInt();
+		options[selected-1].oper(this, s , database);
+		showList(s, database);
+	}
+	public void print() {
+		System.out.println("ID:\t \t"+getID());
+		System.out.println("First Name: \t"+getFirstName());
+		System.out.println("Last Name: \t"+getLastName());
+		System.out.println("Email: \t"+getEmail());
+		System.out.println("Phone Number: \t"+getPhoneNumber());
+		System.out.println("Address: \t"+getAddress());
+		System.out.println("Salary: \t"+getSalary()+"$");
+		System.out.println("Department: \t"+getDepartmentToString());
+		System.out.println("---------------------------------------");
+	}
 }

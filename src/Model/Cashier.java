@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.Scanner;
+import View.ChangePassword;
 
 public class Cashier extends Employee{
 	
@@ -17,6 +18,12 @@ public class Cashier extends Employee{
 		this.address = address;
 		this.salary = salary;
 		this.password = password;
+	}
+	
+	private void generateList() {
+		this.options = new Option[] {
+				new ChangePassword()
+		};
 	}
 	
 	@Override

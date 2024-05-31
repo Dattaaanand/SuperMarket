@@ -1,16 +1,17 @@
 package Model;
 
 import java.util.Iterator;
+
 import java.util.Scanner;
 
+import View.ChangePassword;
 import View.CreateEmployee;
+import View.UpdateEmployee;
 
 public class Admin extends Employee{
 	
 	public Admin() {
-		this.options = new Option[] {
-			new CreateEmployee()
-		};
+		generateList();
 	}
 	
 	public Admin(int ID, String firstName, String lastName, String email, String phoneNumber, String address, double salary, String password) {
@@ -22,8 +23,12 @@ public class Admin extends Employee{
 		this.address = address;
 		this.salary = salary;
 		this.password = password;
+		generateList();
+	}
+	
+	public void generateList() {
 		this.options = new Option[] {
-				new CreateEmployee()
+				new CreateEmployee(), new UpdateEmployee(), new ChangePassword()
 		};
 	}
 
