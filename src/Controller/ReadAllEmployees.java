@@ -61,16 +61,7 @@ public class ReadAllEmployees {
 	}
 	public void print() {
 		for (Employee e : employees) {
-			System.out.println("----------------------------------------");
-			System.out.println("ID:\t \t"+e.getID());
-			System.out.println("First Name: \t"+e.getFirstName());
-			System.out.println("Last Name: \t"+e.getLastName());
-			System.out.println("Email: \t"+e.getEmail());
-			System.out.println("Phone Number: \t"+e.getPhoneNumber());
-			System.out.println("Address: \t"+e.getAddress());
-			System.out.println("Salary: \t"+e.getSalary()+"$");
-			System.out.println("Department: \t"+e.getDepartment());
-			System.out.println("---------------------------------------");
+			e.print();
 		}
 	}
 }

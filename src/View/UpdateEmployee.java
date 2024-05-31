@@ -18,7 +18,7 @@ public class UpdateEmployee implements Option{
 			ID = sc.nextInt();
 		}
 		Employee emp = new ReadEmployee(ID, database).getEmployee();
-		System.out.println("Enter first name (-1 to keep "+emp.getFirstName()+"):");
+		System.out.println("Enter First name (-1 to keep "+emp.getFirstName()+"):");
 		String firstName = sc.next();
 		if (!firstName.equals("-1")) {
 			emp.setFirstName(firstName);

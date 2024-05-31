@@ -15,6 +15,7 @@ public class ReadEmployee {
 		try {
 			ResultSet rs = database.getStatement().executeQuery(select);
 			rs.next();
+			int id = rs.getInt("ID");
 			String firstName = rs.getString("FirstName");
 			String lastName = rs.getString("LastName");
 			String phoneNumber = rs.getString("PhoneNumber");
@@ -23,7 +24,6 @@ public class ReadEmployee {
 			String address = rs.getString("Address");
 			double salary = rs.getDouble("Salary");
 			int department = rs.getInt("Department");
-			Employee e;
 			switch (department) {
 			case 0:
 				e = new Admin();
@@ -39,7 +39,7 @@ public class ReadEmployee {
 				e = new Cashier();
 				break;
 				}
-			e.setID(ID);
+			e.setID(id);
 			e.setFirstName(firstName);
 			e.setLastName(lastName);
 			e.setEmail(email);
@@ -47,7 +47,6 @@ public class ReadEmployee {
 			e.setPassword(password);
 			e.setSalary(salary);
 			e.setPhoneNumber(phoneNumber);
-			e.setEmail(email);
 		}
 		catch (SQLException exception) {
 			exception.printStackTrace();
