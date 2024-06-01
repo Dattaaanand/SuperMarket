@@ -4,9 +4,15 @@ import java.util.Iterator;
 
 import java.util.Scanner;
 
+import Controller.ReadSectionProducts;
 import View.ChangePassword;
 import View.CreateEmployee;
+import View.CreateProduct;
+import View.CreateReciept;
+import View.DeleteProduct;
+import View.ReadAllProducts;
 import View.UpdateEmployee;
+import View.UpdateProduct;
 
 public class Admin extends Employee{
 	
@@ -28,7 +34,14 @@ public class Admin extends Employee{
 	
 	public void generateList() {
 		this.options = new Option[] {
-				new CreateEmployee(), new UpdateEmployee(), new ChangePassword()
+				new CreateEmployee(), 
+				new UpdateEmployee(), 
+				new ChangePassword(),
+				new CreateProduct(),
+				new ReadAllProducts(),
+				new UpdateProduct(),
+				new DeleteProduct(),
+				new CreateReciept(),
 		};
 	}
 

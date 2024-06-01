@@ -2,6 +2,7 @@ package Model;
 
 import java.util.Scanner;
 import View.ChangePassword;
+import View.CreateReciept;
 
 public class Cashier extends Employee{
 	
@@ -22,6 +23,7 @@ public class Cashier extends Employee{
 	
 	private void generateList() {
 		this.options = new Option[] {
+				new CreateReciept(),
 				new ChangePassword()
 		};
 	}

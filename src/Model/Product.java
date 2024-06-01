@@ -56,4 +56,15 @@ public class Product {
 	public void setQty(int qty) {
 		this.qty = qty;
 	}
+
+	public void print() {
+		System.out.println("--------------------------");
+		System.out.println("ID:\t"+getID());
+		System.out.println("Name:\t"+getName());
+		System.out.println("Description: \t"+getDescription());
+		System.out.println("Price:\t\t"+getPrice()+"$");
+		System.out.println("Qty:\t\t"+getQty());
+		
+
+	}
 }
