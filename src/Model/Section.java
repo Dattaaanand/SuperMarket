@@ -1,4 +1,5 @@
 package Model;
+import java.security.PublicKey;
 import java.util.ArrayList;
 
 public class Section {
@@ -46,5 +47,13 @@ public class Section {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public void print() {
+		System.out.println("-------------------------");
+		System.out.println("ID : \t \t"+ getID());
+		System.out.println("Name : \t \t"+ getName());
+		System.out.println("Description : \t"+ getDescription());
+		System.out.println("-------------------------");
 	}
 }

@@ -6,7 +6,13 @@ import java.util.Scanner;
 
 import View.ChangePassword;
 import View.CreateEmployee;
+import View.CreateSection;
+import View.DeleteEmployee;
+import View.DeleteSection;
+import View.ReadAllEmployees;
+import View.ReadAllSections;
 import View.UpdateEmployee;
+import View.UpdateSection;
 
 public class Admin extends Employee{
 	
@@ -28,7 +34,15 @@ public class Admin extends Employee{
 	
 	public void generateList() {
 		this.options = new Option[] {
-				new CreateEmployee(), new UpdateEmployee(), new ChangePassword()
+				new CreateEmployee(),
+				new ReadAllEmployees(), 
+				new UpdateEmployee(), 
+				new DeleteEmployee(),
+				new CreateSection(),
+				new ReadAllSections(),
+				new UpdateSection(),
+				new DeleteSection(),
+				new ChangePassword()
 		};
 	}
 
@@ -47,6 +61,7 @@ public class Admin extends Employee{
 		
 		int selected = sc.nextInt();
 		options[selected -1].oper(this, sc, database);
+		
 	}
 	
 	
