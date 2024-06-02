@@ -5,6 +5,7 @@ import java.util.Scanner;
 import Model.Database;
 import Model.Employee;
 import Model.Option;
+import Controller.ReadAllSections;
 
 public class ReadSectionProducts implements Option {
 

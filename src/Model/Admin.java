@@ -4,15 +4,21 @@ import java.util.Iterator;
 
 import java.util.Scanner;
 
-import Controller.ReadSectionProducts;
 import View.ChangePassword;
 import View.CreateEmployee;
 import View.CreateProduct;
 import View.CreateReciept;
+import View.CreateSection;
+import View.DeleteEmployee;
 import View.DeleteProduct;
+import View.DeleteSection;
+import View.ReadAllEmployees;
 import View.ReadAllProducts;
+import View.ReadAllSections;
+import View.ReadSectionProducts;
 import View.UpdateEmployee;
 import View.UpdateProduct;
+import View.UpdateSection;
 
 public class Admin extends Employee{
 	
@@ -34,14 +40,22 @@ public class Admin extends Employee{
 	
 	public void generateList() {
 		this.options = new Option[] {
-				new CreateEmployee(), 
+				new CreateEmployee(),
+				new ReadAllEmployees(), 
 				new UpdateEmployee(), 
+				new DeleteEmployee(),
+				new CreateSection(),
+				new ReadAllSections(),
+				new UpdateSection(),
+				new DeleteSection(),
 				new ChangePassword(),
 				new CreateProduct(),
 				new ReadAllProducts(),
+				new ReadSectionProducts(),
 				new UpdateProduct(),
 				new DeleteProduct(),
 				new CreateReciept(),
+				
 		};
 	}
 
@@ -60,6 +74,7 @@ public class Admin extends Employee{
 		
 		int selected = sc.nextInt();
 		options[selected -1].oper(this, sc, database);
+		
 	}
 	
 	

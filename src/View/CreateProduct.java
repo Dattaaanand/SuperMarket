@@ -9,11 +9,11 @@ import Model.Product;
 public class CreateProduct implements Option {
 	
 	@Override
-	public void oper(Employee user, Scanners, Database database) {
-			Product product = new Product();
+	public void oper(Employee user, Scanner s, Database database) {
+		Product product = new Product();
 			
 			System.out.println("Enter name:");
-			product.setName(s.next()); I
+			product.setName(s.next()); 
 			
 			System.out.println("Enter description:");
 			product.setDescription (s.next());
@@ -31,7 +31,7 @@ public class CreateProduct implements Option {
 			while(sectionID<0) {
 				sections.print();
 				System.out.println("Enter section ID( -1 to show all sections");
-				int sectionID=s.nextInt();
+				sectionID=s.nextInt();
 			}
 			
 			if(!sections.getIDs().contains(sectionID)) {
@@ -39,7 +39,7 @@ public class CreateProduct implements Option {
 				return;
 			}
 			
-			new Controller.CreateProduct(product,sectionID, sectionID, database);
+			new Controller.CreateProduct(product,sectionID, database);
 			
 	}
 	

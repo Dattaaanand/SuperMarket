@@ -2,12 +2,11 @@ package Model;
 
 import java.util.Scanner;
 
-import Controller.ReadSectionProducts;
 import View.ChangePassword;
-import View.CreateProduct;
-import View.DeleteProduct;
-import View.ReadAllProducts;
-import View.UpdateProduct;
+import View.CreateSection;
+import View.DeleteSection;
+import View.ReadAllSections;
+import View.UpdateSection;
 
 public class Storekeeper extends Employee{
 	
@@ -29,12 +28,12 @@ public class Storekeeper extends Employee{
 	
 	private void generateList() {
 		this.options = new Option[] {
-				new ChangePassword(),
-				new CreateProduct(),
-				new ReadAllProducts(),
-				new View.ReadSectionProducts(),
-				new UpdateProduct(),
-				new DeleteProduct(),
+				new CreateSection(),
+				new ReadAllSections(),
+				new UpdateSection(),
+				new DeleteSection(),
+				new ChangePassword()
+			
 		};
 	}
 	

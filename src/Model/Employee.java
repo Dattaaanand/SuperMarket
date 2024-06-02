@@ -123,7 +123,7 @@ public abstract class Employee {
 		System.out.println("ID:\t \t"+getID());
 		System.out.println("First Name: \t"+getFirstName());
 		System.out.println("Last Name: \t"+getLastName());
-		System.out.println("Email: \t"+getEmail());
+		System.out.println("Email: \t \t"+getEmail());
 		System.out.println("Phone Number: \t"+getPhoneNumber());
 		System.out.println("Address: \t"+getAddress());
 		System.out.println("Salary: \t"+getSalary()+"$");
