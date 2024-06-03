@@ -6,7 +6,7 @@ import Model.Employee;
 import Model.Option;
 
 public class Login implements Option{
-
+	
 	@Override
 	public void oper(Employee user, Scanner sc, Database database) {
 		
