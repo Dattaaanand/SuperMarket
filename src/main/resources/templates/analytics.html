@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - SuperMarket Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body { background-color: #f5f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .sidebar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; position: fixed; left: 0; top: 0; width: 250px; padding: 20px; color: white; }
+        .sidebar .brand { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.2); }
+        .sidebar .brand h3 { font-size: 24px; font-weight: 700; }
+        .sidebar .nav-menu { list-style: none; }
+        .sidebar .nav-item { margin: 10px 0; }
+        .sidebar .nav-link { color: rgba(255,255,255,0.8); text-decoration: none; display: block; padding: 12px 15px; border-radius: 5px; transition: all 0.3s ease; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.2); color: white; }
+        .sidebar .logout-btn { position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 12px; border-radius: 5px; cursor: pointer; width: auto; }
+        .main-content { margin-left: 250px; padding: 30px; }
+        .top-bar { background: white; padding: 20px 30px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .stat-card { background: white; border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .stat-card .value { font-size: 32px; font-weight: 700; color: #667eea; }
+        .content-card { background: white; border-radius: 10px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="brand"><h3><i class="bi bi-shop"></i> SuperMarket</h3></div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="/dashboard" class="nav-link"><i class="bi bi-house-fill"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="/products" class="nav-link"><i class="bi bi-box-fill"></i> Products</a></li>
+            <li class="nav-item"><a href="/sections" class="nav-link"><i class="bi bi-collection-fill"></i> Sections</a></li>
+            <li class="nav-item"><a href="/receipts" class="nav-link"><i class="bi bi-receipt"></i> Receipts</a></li>
+            <li class="nav-item"><a href="/employees" class="nav-link"><i class="bi bi-people-fill"></i> Employees</a></li>
+            <li class="nav-item"><a href="/analytics" class="nav-link active"><i class="bi bi-graph-up"></i> Analytics</a></li>
+        </ul>
+        <button class="logout-btn" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Logout</button>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h2>Sales Analytics & Reports</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5>Total Sales</h5>
+                    <div class="value" id="totalSales">$0</div>
+                    <small class="text-muted">All time</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5>Total Tax</h5>
+                    <div class="value" id="totalTax">$0</div>
+                    <small class="text-muted">Collected</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5>Total Discount</h5>
+                    <div class="value" id="totalDiscount">$0</div>
+                    <small class="text-muted">Given</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h5>Transactions</h5>
+                    <div class="value" id="totalTransactions">0</div>
+                    <small class="text-muted">Total receipts</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="content-card">
+                    <h3>Sales by Payment Method</h3>
+                    <canvas id="paymentChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="content-card">
+                    <h3>Weekly Sales Trend</h3>
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="content-card">
+                    <h3>Top Products</h3>
+                    <table class="table">
+                        <thead style="background-color: #f5f7fa;">
+                            <tr>
+                                <th>Product</th>
+                                <th>Section</th>
+                                <th>Quantity Sold</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topProductsTable">
+                            <tr><td colspan="4" class="text-center text-muted">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE = '/api';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadAnalytics();
+        });
+
+        function checkAuth() {
+            if (!localStorage.getItem('employee')) window.location.href = '/login';
+        }
+
+        async function loadAnalytics() {
+            try {
+                const res = await fetch(`${API_BASE}/receipts/analytics`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                const analytics = data.data;
+
+                document.getElementById('totalSales').textContent = `$${(analytics.totalSales || 0).toFixed(2)}`;
+                document.getElementById('totalTax').textContent = `$${(analytics.totalTax || 0).toFixed(2)}`;
+                document.getElementById('totalDiscount').textContent = `$${(analytics.totalDiscount || 0).toFixed(2)}`;
+                document.getElementById('totalTransactions').textContent = analytics.totalReceipts || 0;
+
+                setupCharts();
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
+        }
+
+        function setupCharts() {
+            // Payment Method Chart
+            const paymentCtx = document.getElementById('paymentChart')?.getContext('2d');
+            if (paymentCtx) {
+                new Chart(paymentCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Cash', 'Card', 'Mixed'],
+                        datasets: [{
+                            data: [45, 35, 20],
+                            backgroundColor: ['#667eea', '#f093fb', '#4facfe']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // Trend Chart
+            const trendCtx = document.getElementById('trendChart')?.getContext('2d');
+            if (trendCtx) {
+                new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Sales ($)',
+                            data: [2500, 3200, 2800, 4100, 3600, 5200, 4800],
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+    </script>
+</body>
+</html>

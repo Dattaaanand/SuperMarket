@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipts & Billing - SuperMarket Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f5f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .sidebar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; position: fixed; left: 0; top: 0; width: 250px; padding: 20px; color: white; }
+        .sidebar .brand { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.2); }
+        .sidebar .brand h3 { font-size: 24px; font-weight: 700; }
+        .sidebar .nav-menu { list-style: none; }
+        .sidebar .nav-item { margin: 10px 0; }
+        .sidebar .nav-link { color: rgba(255,255,255,0.8); text-decoration: none; display: block; padding: 12px 15px; border-radius: 5px; transition: all 0.3s ease; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.2); color: white; }
+        .sidebar .logout-btn { position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 12px; border-radius: 5px; cursor: pointer; width: auto; }
+        .main-content { margin-left: 250px; padding: 30px; }
+        .top-bar { background: white; padding: 20px 30px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .content-card { background: white; border-radius: 10px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn-primary-custom { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 10px 20px; border-radius: 5px; font-weight: 600; cursor: pointer; }
+        .btn-primary-custom:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4); color: white; }
+        .modal-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .table { margin-top: 20px; }
+        .action-btn { padding: 5px 10px; margin: 0 2px; font-size: 12px; }
+        .receipt-item { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="brand"><h3><i class="bi bi-shop"></i> SuperMarket</h3></div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="/dashboard" class="nav-link"><i class="bi bi-house-fill"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="/products" class="nav-link"><i class="bi bi-box-fill"></i> Products</a></li>
+            <li class="nav-item"><a href="/sections" class="nav-link"><i class="bi bi-collection-fill"></i> Sections</a></li>
+            <li class="nav-item"><a href="/receipts" class="nav-link active"><i class="bi bi-receipt"></i> Receipts</a></li>
+            <li class="nav-item"><a href="/employees" class="nav-link"><i class="bi bi-people-fill"></i> Employees</a></li>
+            <li class="nav-item"><a href="/analytics" class="nav-link"><i class="bi bi-graph-up"></i> Analytics</a></li>
+        </ul>
+        <button class="logout-btn" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Logout</button>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h2>Receipts & Billing</h2>
+            <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#receiptModal">
+                <i class="bi bi-plus"></i> New Receipt
+            </button>
+        </div>
+
+        <div class="content-card">
+            <div id="alertBox"></div>
+            <table class="table table-hover">
+                <thead style="background-color: #f5f7fa;">
+                    <tr>
+                        <th>Receipt #</th>
+                        <th>Cashier</th>
+                        <th>Total</th>
+                        <th>Items</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="receiptsTable">
+                    <tr><td colspan="7" class="text-center text-muted">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal fade" id="receiptModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Receipt</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="receiptForm">
+                        <div class="mb-3">
+                            <label class="form-label">Cashier</label>
+                            <select class="form-control" id="cashier" required></select>
+                        </div>
+                        <div id="itemsContainer"></div>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="addReceiptItem()">Add Item</button>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Subtotal</label>
+                                <input type="text" class="form-control" id="subtotal" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Tax (%)</label>
+                                <input type="number" class="form-control" id="taxPercent" value="10" onchange="calculateTotal()">
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label>Tax Amount</label>
+                                <input type="text" class="form-control" id="taxAmount" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Total</label>
+                                <input type="text" class="form-control" id="total" readonly style="font-weight: bold; font-size: 18px;">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 mt-3">
+                            <label class="form-label">Payment Method</label>
+                            <select class="form-control" id="paymentMethod" required>
+                                <option value="CASH">Cash</option>
+                                <option value="CARD">Card</option>
+                                <option value="BOTH">Both</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Complete Receipt</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_BASE = '/api';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadCashiers();
+            loadReceipts();
+        });
+
+        document.getElementById('receiptForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await saveReceipt();
+        });
+
+        function checkAuth() {
+            if (!localStorage.getItem('employee')) window.location.href = '/login';
+        }
+
+        async function loadCashiers() {
+            try {
+                const res = await fetch(`${API_BASE}/employees/role/CASHIER`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                const select = document.getElementById('cashier');
+                select.innerHTML = '<option value="">Select Cashier</option>';
+                data.data?.forEach(c => {
+                    select.innerHTML += `<option value="${c.id}">${c.firstName} ${c.lastName}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading cashiers:', error);
+            }
+        }
+
+        async function loadReceipts() {
+            try {
+                const res = await fetch(`${API_BASE}/receipts`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                displayReceipts(data.data || []);
+            } catch (error) {
+                showAlert('Error loading receipts', 'danger');
+            }
+        }
+
+        function displayReceipts(receipts) {
+            const tbody = document.getElementById('receiptsTable');
+            if (receipts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No receipts</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = receipts.map(r => `
+                <tr>
+                    <td><strong>${r.receiptNumber}</strong></td>
+                    <td>${r.cashierName}</td>
+                    <td>$${r.totalAmount?.toFixed(2)}</td>
+                    <td>${r.itemsCount || 0}</td>
+                    <td><span class="badge bg-primary">${r.paymentMethod}</span></td>
+                    <td>${new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info action-btn" onclick="viewReceipt(${r.id})">View</button>
+                        <button class="btn btn-sm btn-danger action-btn" onclick="deleteReceipt(${r.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addReceiptItem() {
+            const container = document.getElementById('itemsContainer');
+            const itemCount = container.children.length + 1;
+            const itemHTML = `
+                <div class="receipt-item" id="item-${itemCount}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Product</label>
+                            <select class="form-control product-select" onchange="updateItemPrice(this)">
+                                <option value="">Select Product</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Qty</label>
+                            <input type="number" class="form-control item-qty" value="1" onchange="calculateTotal()">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Price</label>
+                            <input type="text" class="form-control item-price" readonly>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-danger mt-2" onclick="removeItem('item-${itemCount}')">Remove</button>
+                </div>
+            `;
+            container.innerHTML += itemHTML;
+            loadProductsForSelect(container.querySelector(`#item-${itemCount} .product-select`));
+        }
+
+        async function loadProductsForSelect(select) {
+            try {
+                const res = await fetch(`${API_BASE}/products`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                select.innerHTML = '<option value="">Select Product</option>';
+                data.data?.forEach(p => {
+                    select.innerHTML += `<option value="${p.id}" data-price="${p.price}">${p.name}</option>`;
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateItemPrice(select) {
+            const price = select.options[select.selectedIndex].dataset.price || 0;
+            select.closest('.receipt-item').querySelector('.item-price').value = price;
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            const items = document.querySelectorAll('.receipt-item');
+            let subtotal = 0;
+
+            items.forEach(item => {
+                const qty = parseInt(item.querySelector('.item-qty').value) || 0;
+                const price = parseFloat(item.querySelector('.item-price').value) || 0;
+                subtotal += qty * price;
+            });
+
+            const taxPercent = parseFloat(document.getElementById('taxPercent').value) || 0;
+            const tax = subtotal * (taxPercent / 100);
+            const total = subtotal + tax;
+
+            document.getElementById('subtotal').value = subtotal.toFixed(2);
+            document.getElementById('taxAmount').value = tax.toFixed(2);
+            document.getElementById('total').value = total.toFixed(2);
+        }
+
+        function removeItem(itemId) {
+            document.getElementById(itemId).remove();
+            calculateTotal();
+        }
+
+        async function saveReceipt() {
+            const items = document.querySelectorAll('.receipt-item');
+            const itemsData = [];
+
+            items.forEach(item => {
+                const select = item.querySelector('.product-select');
+                const qty = parseInt(item.querySelector('.item-qty').value);
+                const price = parseFloat(item.querySelector('.item-price').value);
+
+                if (select.value) {
+                    itemsData.push({
+                        productId: select.value,
+                        productName: select.options[select.selectedIndex].text,
+                        quantity: qty,
+                        price: price
+                    });
+                }
+            });
+
+            const receiptData = {
+                cashierId: parseInt(document.getElementById('cashier').value),
+                totalAmount: parseFloat(document.getElementById('total').value),
+                taxAmount: parseFloat(document.getElementById('taxAmount').value),
+                itemsCount: itemsData.length,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                items: JSON.stringify(itemsData)
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/receipts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(receiptData)
+                });
+
+                const result = await res.json();
+                if (result.success) {
+                    showAlert('Receipt created successfully', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('receiptModal')).hide();
+                    loadReceipts();
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        }
+
+        async function viewReceipt(id) {
+            try {
+                const res = await fetch(`${API_BASE}/receipts/${id}`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                const r = data.data;
+                alert(`Receipt: ${r.receiptNumber}\nTotal: $${r.totalAmount}\nDate: ${new Date(r.createdAt).toLocaleString()}`);
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        }
+
+        async function deleteReceipt(id) {
+            if (!confirm('Delete this receipt?')) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/receipts/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showAlert('Receipt deleted', 'success');
+                    loadReceipts();
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'danger');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+    </script>
+</body>
+</html>
